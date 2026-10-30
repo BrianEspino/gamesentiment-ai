@@ -1,5 +1,7 @@
 # GameSentiment AI web
 
+**Aplicación publicada:** https://gamesentiment-ai.onrender.com/ — Render Free (US$0/mes). El 30 de octubre de 2026 se verificaron una predicción real, un CSV de tres comentarios, revisión humana y exportación desde el servidor público. Consulta `DESPLIEGUE_RENDER.md` para operación y actualización.
+
 Aplicación independiente para analizar sentimientos de comentarios sobre videojuegos. Conserva RoBERTuito, las probabilidades de las tres clases, detección de idioma, traducción opcional y revisión humana. Incluye el estudio histórico de GTA VI de YouTube, Bluesky y Mastodon en forma agregada. No contiene código ni datos de Telco.
 
 ## Ejecutar en Windows
@@ -63,11 +65,11 @@ El backend necesita Python y PyTorch: un alojamiento de páginas estáticas por 
 2. En Render, selecciona **New → Web Service** y conecta ese repositorio.
 3. Elige **Docker**, rama principal y contexto raíz `.`. Si esta carpeta está dentro de otro repositorio, configura **Root Directory** con su ruta relativa.
 4. Usa el Dockerfile incluido, sin sobrescribir el comando de inicio. Define `PORT=7860`. El servidor escucha en `0.0.0.0:$PORT`. La ruta de salud es `/api/health`.
-5. Selecciona recursos con memoria suficiente para PyTorch, modelo y peticiones. Como punto de partida de ingeniería, reserva al menos **2 GB de RAM** y mide el consumo real; no se validó un plan concreto ni se garantiza el funcionamiento en un plan gratuito. Comprueba el precio antes de contratar.
+5. Selecciona **Free (US$0/mes, 512 MB)** para reproducir el despliegue actual, donde se comprobó inferencia real con esta versión. La carga inicial puede ser lenta; vigila memoria y errores si aumentas las longitudes o el tráfico. Las pruebas acotadas no garantizan capacidad sostenida. No es necesario contratar un plan de pago para repetir lo verificado.
 6. Inicia el despliegue. La construcción instala las dependencias y descarga el modelo con el usuario sin privilegios que lo ejecutará. Si falla la descarga, la construcción falla en lugar de publicar una web que no puede cargar el modelo.
 7. Cuando Render entregue la URL HTTPS, abre la página y repite las pruebas de texto, CSV, traducción y exportación. Verifica una predicción real: la ruta de salud solo certifica que el servidor responde.
 
-`render.yaml` sirve como base para un Blueprint, pero no fija un plan de pago. Revisa la configuración de recursos antes de crearlo. La caché del modelo queda dentro de la imagen Docker; no se requiere volumen persistente para este diseño sin base de datos.
+`render.yaml` fija explícitamente `plan: free` para un Blueprint. La instancia gratuita se probó con éxito en el despliegue actual; revisa la memoria ante cambios o mayor carga. La caché del modelo queda dentro de la imagen Docker; no se requiere volumen persistente para este diseño sin base de datos.
 
 El comando de producción es:
 
@@ -84,7 +86,7 @@ docker build -t gamesentiment-ai .
 docker run --rm -p 7860:7860 -e PORT=7860 gamesentiment-ai
 ```
 
-Abre http://localhost:7860. El Dockerfile se entrega sin una construcción verificada en esta máquina porque el motor Docker no estaba iniciado. El despliegue público aún no está realizado.
+Abre http://localhost:7860. La construcción local no se ejecutó porque el motor Docker no estaba iniciado. La construcción Linux sí se completó en Render y la aplicación pública fue verificada.
 
 ## API
 
@@ -140,7 +142,7 @@ Este comando valida los conteos y las 25 alertas resueltas del estudio actual y 
 
 Se leyó la ficha `Ficha_Tecnica_ML_Studio.docx` del ZIP de clase. Describe Flask, Blueprints, DTO, servicios y frontend HTML/CSS/JS; esa arquitectura fue reutilizada con lógica de sentimientos. No se incluyeron regresión de casas, K-Means ni Telco. El documento Word propio de GameSentiment no apareció en las fuentes accesibles y queda pendiente de cotejo.
 
-Consulta `INSPECCION.md` para procedencia, decisiones de adaptación y límites de la evaluación. Falta construir y verificar la imagen Linux, realizar el despliegue en una cuenta de hosting y validar la URL pública y sus recursos. La prueba de traducción automática desde esta conexión fue bloqueada por Google; queda como dependencia externa y se ofrece traducción manual como alternativa. No se inventaron métricas de exactitud sobre GTA VI: las probabilidades del modelo y los porcentajes del estudio no equivalen a accuracy ni F1.
+Consulta `INSPECCION.md` para procedencia, decisiones de adaptación y límites de la evaluación. La imagen Linux se construyó en Render y la URL pública se verificó en el plan gratuito. Queda comprobar comportamiento ante mayor carga y disponibilidad sostenida. La prueba de traducción automática desde esta conexión fue bloqueada por Google; queda como dependencia externa y se ofrece traducción manual como alternativa. No se inventaron métricas de exactitud sobre GTA VI: las probabilidades del modelo y los porcentajes del estudio no equivalen a accuracy ni F1.
 
 ## Referencias técnicas
 

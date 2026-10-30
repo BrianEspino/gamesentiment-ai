@@ -1,0 +1,93 @@
+{
+  "resultados": [
+    {
+      "comentario_id": "",
+      "confianza": 0.9767,
+      "estado_revision": "PENDIENTE",
+      "fue_traducido": false,
+      "idioma": "es",
+      "metodo_traduccion": "NINGUNO",
+      "motivos_revision": [],
+      "plataforma": "YouTube",
+      "probabilidades": {
+        "NEGATIVO": 0.0038,
+        "NEUTRAL": 0.0194,
+        "POSITIVO": 0.9767
+      },
+      "sentimiento_final": "",
+      "sentimiento_modelo": "POSITIVO",
+      "texto": "Este videojuego es increíble y me encanta jugarlo",
+      "texto_modelo": "Este videojuego es increíble y me encanta jugarlo",
+      "texto_publicacion_origen": ""
+    },
+    {
+      "comentario_id": "",
+      "confianza": 0.9801,
+      "estado_revision": "PENDIENTE",
+      "fue_traducido": false,
+      "idioma": "es",
+      "metodo_traduccion": "NINGUNO",
+      "motivos_revision": [],
+      "plataforma": "Bluesky",
+      "probabilidades": {
+        "NEGATIVO": 0.9801,
+        "NEUTRAL": 0.0174,
+        "POSITIVO": 0.0025
+      },
+      "sentimiento_final": "",
+      "sentimiento_modelo": "NEGATIVO",
+      "texto": "La actualización es horrible y arruinó toda la experiencia",
+      "texto_modelo": "La actualización es horrible y arruinó toda la experiencia",
+      "texto_publicacion_origen": ""
+    },
+    {
+      "comentario_id": "",
+      "confianza": 0.6863,
+      "estado_revision": "PENDIENTE",
+      "fue_traducido": false,
+      "idioma": "es",
+      "metodo_traduccion": "NINGUNO",
+      "motivos_revision": [
+        "Posible opinión mixta",
+        "Posible sarcasmo"
+      ],
+      "plataforma": "Mastodon",
+      "probabilidades": {
+        "NEGATIVO": 0.6863,
+        "NEUTRAL": 0.2752,
+        "POSITIVO": 0.0385
+      },
+      "sentimiento_final": "",
+      "sentimiento_modelo": "NEGATIVO",
+      "texto": "Los gráficos son hermosos, pero tiene muchos errores 🙄",
+      "texto_modelo": "Los gráficos son hermosos, pero tiene muchos errores 🙄",
+      "texto_publicacion_origen": ""
+    },
+    {
+      "comentario_id": "",
+      "confianza": 0.9767,
+      "estado_revision": "PENDIENTE",
+      "fue_traducido": true,
+      "idioma": "en",
+      "metodo_traduccion": "MANUAL",
+      "motivos_revision": [
+        "Verificar traducción manual y fidelidad al original"
+      ],
+      "plataforma": "Manual",
+      "probabilidades": {
+        "NEGATIVO": 0.0038,
+        "NEUTRAL": 0.0194,
+        "POSITIVO": 0.9767
+      },
+      "sentimiento_final": "",
+      "sentimiento_modelo": "POSITIVO",
+      "texto": "This video game is really wonderful and I absolutely love playing it",
+      "texto_modelo": "Este videojuego es increíble y me encanta jugarlo",
+      "texto_publicacion_origen": ""
+    }
+  ],
+  "resumen": {
+    "NEGATIVO": 2,
+    "POSITIVO": 2
+  }
+}

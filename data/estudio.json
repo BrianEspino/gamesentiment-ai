@@ -1,0 +1,51 @@
+{
+  "fuente": "resumen_tres_redes_auditado.csv",
+  "redes": [
+    {
+      "plataforma": "YouTube",
+      "total_csv": 100,
+      "positivos": 46,
+      "neutrales": 23,
+      "negativos": 24,
+      "validos": 93,
+      "excluidos": 7,
+      "pendientes": 0,
+      "porcentaje_positivo": 49.46,
+      "porcentaje_neutral": 24.73,
+      "porcentaje_negativo": 25.81
+    },
+    {
+      "plataforma": "Bluesky",
+      "total_csv": 55,
+      "positivos": 11,
+      "neutrales": 23,
+      "negativos": 20,
+      "validos": 54,
+      "excluidos": 1,
+      "pendientes": 0,
+      "porcentaje_positivo": 20.37,
+      "porcentaje_neutral": 42.59,
+      "porcentaje_negativo": 37.04
+    },
+    {
+      "plataforma": "Mastodon",
+      "total_csv": 14,
+      "positivos": 10,
+      "neutrales": 0,
+      "negativos": 4,
+      "validos": 14,
+      "excluidos": 0,
+      "pendientes": 0,
+      "porcentaje_positivo": 71.43,
+      "porcentaje_neutral": 0.0,
+      "porcentaje_negativo": 28.57
+    }
+  ],
+  "alertas_verificadas": 25,
+  "sha256_fuentes": {
+    "youtube_auditado.csv": "4bb69372e03245a8cbd4b48ecaa033086ec7751030bc454f6ea0eedf12d1152c",
+    "bluesky_auditado.csv": "ce4f222a2a8273282262c0a3768616f4b7ef9fa796ed3032672792edc394cf89",
+    "mastodon_auditado.csv": "d35aba5e76cc873a96554c1b0e40100f7540187be496be7a6ff472e9a150d2a5"
+  },
+  "nota": "Muestras exploratorias; no todas las etiquetas fueron validadas por humanos."
+}

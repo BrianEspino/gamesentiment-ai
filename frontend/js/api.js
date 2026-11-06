@@ -4,7 +4,12 @@ window.GameAPI = {
     const response = await fetch(`/api${path}`, options);
     let data;
     try { data = await response.json(); }
-    catch { throw new Error("El servidor no devolvió una respuesta válida. Reintenta más tarde."); }
+    catch {
+      if (response.status >= 500 || (response.ok && response.headers.get("Content-Type")?.includes("text/html"))) {
+        throw new Error("El servidor se está iniciando o interrumpió el análisis. Espera un momento y vuelve a intentarlo.");
+      }
+      throw new Error("El servidor no devolvió una respuesta válida. Reintenta más tarde.");
+    }
     if (!response.ok) throw new Error(data.error || `Error ${response.status}`);
     return data;
   },

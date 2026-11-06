@@ -97,7 +97,14 @@ class SentimientoService:
         elif idioma != "es":
             r.motivos_revision.append("Verificar idioma")
         try:
-            pred = self.cargar().predict(texto)
+            analyzer = self.cargar()
+            if self._factory:
+                pred = analyzer.predict(texto)
+            else:
+                from torch import inference_mode
+
+                with inference_mode():
+                    pred = analyzer.predict(texto)
             r.sentimiento_modelo = ETIQUETAS[pred.output]
             r.confianza = round(float(pred.probas[pred.output]), 4)
             r.probabilidades = {ETIQUETAS[k]: round(float(pred.probas[k]), 4) for k in ETIQUETAS}

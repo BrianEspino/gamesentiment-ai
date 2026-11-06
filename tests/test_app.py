@@ -49,6 +49,39 @@ def test_flags_and_original_label(client):
     assert abs(sum(r["probabilidades"].values()) - 1) < 1e-6
 
 
+def test_youtube_link_extracts_and_classifies_comments(client, monkeypatch):
+    from backend.services import youtube_service
+
+    monkeypatch.setenv("YOUTUBE_API_KEY", "test-key")
+
+    def get_comments(url, *, headers, params, **options):
+        assert url == youtube_service.API_COMENTARIOS
+        assert headers["X-Goog-Api-Key"] == "test-key"
+        assert params["videoId"] == "QdBZY2fkU-0"
+        assert params["maxResults"] == 30
+        assert options["allow_redirects"] is False
+        return SimpleNamespace(status_code=200, json=lambda: {"items": [
+            {"snippet": {"topLevelComment": {"id": "one", "snippet": {"textDisplay": "Gran juego"}}}},
+            {"snippet": {"topLevelComment": {"id": "two", "snippet": {
+                "textDisplay": "This is an amazing video and I absolutely love it."
+            }}}},
+        ]})
+
+    monkeypatch.setattr(youtube_service.requests, "get", get_comments)
+    response = client.post("/api/sentimiento/youtube", json={"url": "https://youtu.be/QdBZY2fkU-0?t=12"})
+    assert response.status_code == 200
+    assert response.json["resumen"] == {"POSITIVO": 1, "PENDIENTE_IDIOMA": 1}
+    assert response.json["resultados"][0]["comentario_id"] == "one"
+
+
+def test_youtube_validation_and_missing_configuration(client, monkeypatch):
+    monkeypatch.delenv("YOUTUBE_API_KEY", raising=False)
+    invalid = client.post("/api/sentimiento/youtube", json={"url": "https://youtube.com.example/watch?v=QdBZY2fkU-0"})
+    assert invalid.status_code == 422
+    missing_key = client.post("/api/sentimiento/youtube", json={"url": "https://www.youtube.com/shorts/QdBZY2fkU-0"})
+    assert missing_key.status_code == 503
+
+
 def test_csv_and_injection_remains_plain_text(client):
     text = 'texto,plataforma\n"<script>alert(1)</script>",YouTube\n"=SUM(A1:A2)",Bluesky\n'
     response = client.post("/api/sentimiento/predecir", data={"archivo": (io.BytesIO(text.encode()), "datos.csv")})

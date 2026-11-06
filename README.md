@@ -32,6 +32,8 @@ Para una instalación CPU más pequeña en Linux, instala primero `torch==2.14.1
 
 ## Probar la aplicación
 
+En **YouTube**, pega un enlace a un video público, Short o directo y pulsa **Analizar comentarios**. La web consulta hasta 30 comentarios principales recientes, muestra las etiquetas de RoBERTuito y cuenta positivos, neutrales y negativos en un gráfico de barras. Los comentarios que quedan pendientes de idioma, traducción o interpretación se cuentan por separado. Para activar la función en la web pública, consulta los requisitos de YouTube y la configuración del servidor en `DESPLIEGUE_RENDER.md`.
+
 1. Comprueba que `/api/health` devuelve `status: ok`. `modelo_cargado: false` significa que el servidor funciona y el modelo aún no se ha cargado en ese proceso; no es una comprobación de inferencia.
 2. En la página, pulsa **Probar un ejemplo** y **Analizar con RoBERTuito**. Deben aparecer probabilidades, confianza y señales de opinión mixta/sarcasmo.
 3. Selecciona una etiqueta final. El contador de revisados debe aumentar; el resultado original de la IA se conserva.
@@ -95,6 +97,7 @@ Abre http://localhost:7860. La construcción local no se ejecutó porque el moto
 | GET | `/api/health` | Estado del servidor y carga del modelo |
 | GET | `/api/estudio` | Agregados históricos sin comentarios crudos |
 | POST | `/api/sentimiento/predecir` | Texto JSON, lista de comentarios o CSV multipart |
+| POST | `/api/sentimiento/youtube` | JSON con `url` y, opcionalmente, `traducir` booleano |
 
 Ejemplo con PowerShell:
 
@@ -109,7 +112,7 @@ Errores: 413 para exceso de tamaño, 415 para formato HTTP incorrecto, 422 para 
 
 ## Seguridad y privacidad
 
-La web no necesita claves de redes sociales ni token de Hugging Face para este modelo público. El `.env` original sí contiene valores de YouTube y Bluesky: se revisó su presencia sin mostrarlos ni copiarlos. Si ese `.env` se compartió o se publicó anteriormente, revoca y reemplaza las credenciales afectadas; no hay evidencia aquí de una publicación previa.
+El modelo público no requiere token de Hugging Face. El análisis por enlace usa `YOUTUBE_API_KEY` en el servidor. Mantén la clave fuera de GitHub y del navegador. El análisis de texto y CSV está disponible aunque esa clave no esté configurada.
 
 El servidor solo publica `frontend/` y los agregados autorizados. No guarda los comentarios ni las correcciones en disco y no incluye textos en los mensajes de error propios. La inferencia es local al servidor. La traducción opcional usa Google Translate mediante un adaptador HTTP con tiempos de espera y tamaño máximo: los textos detectados en otro idioma salen del servidor, el servicio puede fallar o limitar solicitudes y la traducción debe verificarse. Las peticiones HTTP pueden constar en los registros del proveedor, pero sus cuerpos no se registran por esta aplicación.
 
@@ -119,14 +122,14 @@ La API es pública: tiene un límite **global de 20 peticiones POST/minuto por p
 
 ## Extracción original y actualización del estudio
 
-La carpeta original del escritorio se conservó intacta. Su pipeline de extracción queda como herramienta local del investigador: no se expone una ruta pública que use sus credenciales.
+La carpeta original del escritorio contiene el pipeline local que generó el estudio histórico. La consulta por enlace en la web se realiza por separado con la clave configurada en el servidor.
 
 - YouTube: `02_extraccion_youtube.py`, después `03_analisis_sentimientos.py` y `04_revision_manual.py`.
 - Bluesky: `05_extraccion_bluesky.py`, `06_filtro_pertinencia_bluesky.py`, `07_analisis_bluesky.py` y `08_revision_bluesky.py`.
 - Mastodon: `09_extraccion_mastodon.py` y `10_analisis_mastodon.py`.
 - Consolidación y auditoría: `11_consolidacion_resultados.py`, `12_auditoria_final.py`, `13_correccion_y_cierre.py`. El otro archivo 13 permite traducción manual; no ejecutes ambos indiscriminadamente porque modifican datos de auditoría.
 
-Ese pipeline requiere además pandas, matplotlib, requests, python-dotenv, atproto y beautifulsoup4. Las claves solo se usan en el entorno local: `YOUTUBE_API_KEY`, `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`. Mastodon consulta instancias públicas. No se ejecutaron extracciones ni se consumieron credenciales durante esta adaptación.
+Ese pipeline requiere además pandas, matplotlib, requests, python-dotenv, atproto y beautifulsoup4. Lee `YOUTUBE_API_KEY`, `BLUESKY_HANDLE` y `BLUESKY_APP_PASSWORD` en el entorno local. Mastodon consulta instancias públicas.
 
 Para llevar comentarios originales a la web, divide los CSV en lotes de hasta 30 filas. Revisa textos demasiado largos antes de importarlos. La interfaz conserva ID y contexto si existen, pero solo exporta las columnas documentadas; conserva los CSV originales como fuente completa.
 

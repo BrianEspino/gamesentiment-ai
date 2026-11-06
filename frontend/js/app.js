@@ -75,6 +75,69 @@ function renderResults() {
   });
   renderSummary();
 }
+
+$("youtube-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const submit = $("youtube-submit");
+  const message = $("youtube-message");
+  submit.disabled = true;
+  $("youtube-url").readOnly = true;
+  $("youtube-results").hidden = true;
+  $("youtube-comments").hidden = true;
+  message.textContent = "Buscando comentarios y analizando sentimientos…";
+
+  try {
+    const data = await GameAPI.request("/sentimiento/youtube", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: $("youtube-url").value.trim(), traducir: $("youtube-traducir").checked })
+    });
+    renderYouTube(data);
+    message.textContent = data.resultados.length
+      ? "Análisis terminado."
+      : "YouTube no devolvió comentarios públicos para este video.";
+  } catch (error) {
+    message.textContent = error instanceof TypeError ? "No se pudo conectar con el servidor." : error.message;
+  } finally {
+    submit.disabled = false;
+    $("youtube-url").readOnly = false;
+  }
+});
+
+function renderYouTube({ resultados: comentarios, resumen }) {
+  const chart = $("youtube-chart");
+  chart.replaceChildren();
+  let clasificados = 0;
+  for (const [nombre, color] of [["Positivo", "pos"], ["Neutral", "neu"], ["Negativo", "neg"]]) {
+    const cantidad = resumen[nombre.toUpperCase()] || 0;
+    clasificados += cantidad;
+    const label = el("label", `${nombre} · ${cantidad}`, `youtube-bar-label ${color}`);
+    const bar = el("progress", undefined, `youtube-bar ${color}`);
+    bar.id = `youtube-bar-${color}`;
+    bar.max = comentarios.length || 1;
+    bar.value = cantidad;
+    label.htmlFor = bar.id;
+    chart.append(label, bar);
+  }
+  $("youtube-totals").textContent = `${comentarios.length} obtenidos · ${clasificados} clasificados · ${comentarios.length - clasificados} sin clasificar`;
+  $("youtube-results").hidden = false;
+
+  const lista = $("youtube-list");
+  lista.replaceChildren();
+  for (const comentario of comentarios) {
+    const card = el("article", undefined, "result-card");
+    const etiqueta = comentario.probabilidades[comentario.sentimiento_modelo] === undefined
+      ? "Sin clasificar"
+      : `${comentario.sentimiento_modelo} · ${pct(comentario.confianza)} de confianza`;
+    card.append(el("blockquote", comentario.texto), el("strong", etiqueta, "result-meta"));
+    if (comentario.motivos_revision.length) {
+      card.append(el("p", comentario.motivos_revision.join(" · "), "hint"));
+    }
+    lista.append(card);
+  }
+  $("youtube-comments").hidden = comentarios.length === 0;
+}
+
 // Quote CSV and neutralize spreadsheet formulas, including leading whitespace.
 function csvCell(value) {
   let text = String(value ?? "");

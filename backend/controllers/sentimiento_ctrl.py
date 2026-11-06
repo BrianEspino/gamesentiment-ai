@@ -4,6 +4,7 @@ from collections import Counter
 
 from flask import Blueprint, current_app, jsonify, request
 from backend.services.sentimiento_service import ModeloNoDisponible, ServicioOcupado
+from backend.services.youtube_service import ErrorYouTube, extraer_comentarios, obtener_video_id
 
 bp = Blueprint("sentimiento", __name__, url_prefix="/api/sentimiento")
 PLATAFORMAS = {"Manual", "YouTube", "Bluesky", "Mastodon"}
@@ -54,8 +55,26 @@ def predecir():
         if any(not isinstance(value, str) or len(value) > limit for value, limit in ((metadata["comentario_id"], 200), (metadata["texto_publicacion_origen"], 2000), (metadata["texto_espanol"], 1000))):
             return jsonify(error="ID, contexto o traducción inválidos: máximo 200, 2000 y 1000 caracteres respectivamente."), 422
         normalizados.append({"texto": c["texto"].strip(), "plataforma": plataforma, **metadata})
+    return analizar_comentarios(normalizados, traducir)
+
+
+@bp.post("/youtube")
+def predecir_youtube():
+    if not request.is_json:
+        return jsonify(error="Envía el enlace de YouTube en formato JSON."), 415
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict) or not isinstance(body.get("traducir", False), bool):
+        return jsonify(error="JSON inválido; traducir debe ser booleano."), 422
     try:
-        resultados = current_app.extensions["sentimiento"].analizar(normalizados, traducir)
+        comentarios = extraer_comentarios(obtener_video_id(body.get("url")))
+    except ErrorYouTube as error:
+        return jsonify(error=str(error)), error.status
+    return analizar_comentarios(comentarios, body.get("traducir", False))
+
+
+def analizar_comentarios(comentarios, traducir):
+    try:
+        resultados = current_app.extensions["sentimiento"].analizar(comentarios, traducir) if comentarios else []
     except ServicioOcupado:
         return jsonify(error="El analizador está ocupado. Reintenta en unos segundos."), 503, {"Retry-After": "5"}
     except ModeloNoDisponible:

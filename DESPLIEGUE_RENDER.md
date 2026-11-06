@@ -24,4 +24,6 @@ La revisión de cada usuario permanece en su pestaña. Debe descargarse antes de
 
 La fuente se conectó como repositorio Git público. No se ampliaron permisos de la integración GitHub existente. Para publicar cambios de código, sube el commit a GitHub y, en el servicio Render, utiliza **Manual Deploy → Deploy latest commit**. No actives despliegues con planes de pago; `render.yaml` fija `plan: free` para futuras creaciones por Blueprint.
 
-La traducción automática continúa dependiendo de Google y puede bloquearse. La traducción manual permite continuar conservando original y procedencia. La publicación web no añade extracción de redes en vivo ni utiliza las claves del proyecto local.
+YouTube exige aprobación del caso de uso para publicar análisis de sentimiento derivados de comentarios de su API. Solicítala bajo **Analytics & Reporting** según las [políticas para métricas derivadas](https://developers.google.com/youtube/terms/derived-metrics-policy). Una vez aprobada, configura `YOUTUBE_API_KEY` en **Environment** del servicio Render con la clave del proyecto aprobado y guárdala fuera del repositorio.
+
+La traducción automática continúa dependiendo de Google y puede bloquearse. El analizador de texto y CSV permite aportar una traducción manual.

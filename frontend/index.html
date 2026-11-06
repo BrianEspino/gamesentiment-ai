@@ -8,7 +8,7 @@
   <script src="/static/js/api.js" defer></script><script src="/static/js/app.js" defer></script>
 </head>
 <body>
-  <header><a class="brand" href="/">GS<span>↗</span> <strong>GameSentiment <em>AI</em></strong></a><nav aria-label="Principal"><a href="#analizador">Analizar</a><a href="#estudio">Estudio GTA VI</a><a href="#metodo">Método</a></nav></header>
+  <header><a class="brand" href="/">GS<span>↗</span> <strong>GameSentiment <em>AI</em></strong></a><nav aria-label="Principal"><a href="#analizador">Analizar</a><a href="#youtube">YouTube</a><a href="#estudio">Estudio GTA VI</a><a href="#metodo">Método</a></nav></header>
   <main>
     <section class="hero"><p class="eyebrow">INTELIGENCIA ARTIFICIAL / OPINIONES REALES</p><h1>¿Cómo se siente<br>la comunidad<span> gamer?</span></h1><p class="intro">De un comentario a una perspectiva. Explora opiniones sobre videojuegos con RoBERTuito y revisa lo que el contexto cambia.</p><div class="hero-footer"><a class="primary link-button" href="#analizador">Analizar comentarios ↗</a><span>Español · Tres sentimientos · Revisión humana</span></div><div class="hero-art" aria-hidden="true"><span class="orbit o1"></span><span class="orbit o2"></span><span class="cross">✦</span><span class="chip positive">+ POSITIVO</span><span class="chip neutral">○ NEUTRAL</span><span class="chip negative">− NEGATIVO</span></div></section>
     <section id="analizador" class="panel"><div class="section-heading"><div><p class="eyebrow">01 / LABORATORIO</p><h2>Una opinión. Tres posibilidades.</h2></div><span id="health" class="status" role="status">Conectando…</span></div>
@@ -20,6 +20,31 @@
       <button type="submit" class="primary" id="submit">Analizar con RoBERTuito ↗</button><p id="message" role="status" aria-live="polite"></p></form>
       <aside class="guide"><p class="eyebrow">LECTURA CON CONTEXTO</p><h3>La IA propone.<br>Tú verificas.</h3><p>El modelo estima un sentimiento positivo, neutral o negativo. La confianza expresa su probabilidad, no una garantía de acierto.</p><ol><li>Detectamos el idioma y limpiamos enlaces y menciones.</li><li>RoBERTuito analiza el texto en español.</li><li>Marcamos baja confianza, opiniones mixtas y posible sarcasmo.</li><li>Revisa cada resultado y descarga tus decisiones.</li></ol><p class="hint">Los comentarios se procesan en memoria. Las decisiones permanecen en esta pestaña hasta que la cierres o vuelvas a analizar. Descarga el CSV para conservarlas.</p></aside></div>
       <section id="results" hidden><div class="section-heading"><h3>Resultados de esta sesión</h3><button id="export" class="secondary" type="button">Descargar CSV ↓</button></div><div id="session-summary" class="summary" aria-live="polite"></div><p class="hint">Elige una etiqueta final para marcar cada comentario como REVISADO. La etiqueta del modelo se conserva.</p><div id="result-list"></div></section>
+    </section>
+    <section id="youtube" class="panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">YOUTUBE / ANÁLISIS POR ENLACE</p><h2>Analiza un video de YouTube</h2></div>
+      </div>
+      <div class="workspace">
+        <form id="youtube-form">
+          <label for="youtube-url">Enlace del video</label>
+          <input id="youtube-url" type="url" placeholder="https://www.youtube.com/watch?v=…" maxlength="2048" required>
+          <p class="hint">Puedes pegar el enlace de un video público, Short o directo de cualquier tema. Se consultan hasta 30 comentarios principales recientes.</p>
+          <label class="check"><input id="youtube-traducir" type="checkbox"> Intentar traducir comentarios en otros idiomas con Google Translate</label>
+          <button id="youtube-submit" class="primary" type="submit">Analizar comentarios ↗</button>
+          <p id="youtube-message" class="hint" role="status"></p>
+        </form>
+        <div id="youtube-results" class="study-card" hidden>
+          <h3>Distribución de sentimientos</h3>
+          <p>Estimación de GameSentiment AI con RoBERTuito sobre los comentarios obtenidos de YouTube.</p>
+          <div id="youtube-chart"></div>
+          <p id="youtube-totals"></p>
+        </div>
+      </div>
+      <div id="youtube-comments" class="youtube-comments" hidden>
+        <h3>Comentarios del video</h3>
+        <div id="youtube-list"></div>
+      </div>
     </section>
     <section id="estudio"><div class="section-heading"><div><p class="eyebrow">02 / ESTUDIO EXPLORATORIO</p><h2>GTA VI, en tres comunidades.</h2></div><span class="pill">Resultados históricos auditados</span></div><p class="intro small">Una fotografía del material del proyecto. Estas muestras tienen tamaños y procesos de selección distintos; no representan a todos los jugadores.</p><div class="metrics"><article><strong>169</strong><span>comentarios en archivos finales</span></article><article><strong>161</strong><span>con sentimiento válido</span></article><article><strong>25 / 25</strong><span>alertas de idioma verificadas</span></article></div><div id="study-chart" class="study-grid" aria-live="polite"></div><div class="legend"><span class="pos">● Positivo</span><span class="neu">● Neutral</span><span class="neg">● Negativo</span></div><p class="hint">Los porcentajes usan como denominador los comentarios con sentimiento válido de cada red. Sin alertas pendientes en la segunda verificación; eso no significa que todas las etiquetas hayan sido comprobadas por humanos.</p></section>
     <section id="metodo" class="method"><p class="eyebrow">03 / DETRÁS DEL ANÁLISIS</p><h2>Un modelo de lenguaje.<br>Una revisión necesaria.</h2><div class="method-grid"><article><span>01</span><h3>RoBERTuito</h3><p>Modelo preentrenado de sentimiento para español, utilizado mediante pysentimiento. No fue entrenado específicamente con este conjunto de GTA VI.</p></article><article><span>02</span><h3>Contexto e idioma</h3><p>El umbral de revisión es 65 %. Las señales de sarcasmo y contraste son reglas orientativas, no detectores infalibles. La pertinencia al videojuego se verifica manualmente.</p></article><article><span>03</span><h3>Datos separados</h3><p>El estudio histórico se muestra como agregado. El análisis de nuevos comentarios y sus correcciones no modifican el estudio original.</p></article></div></section>
